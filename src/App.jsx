@@ -6,6 +6,7 @@ import Auth from "./pages/public/auth";
 import ProtectedRoute from "./components/auth/protectedRoute";
 import Dashboard from "./pages/protected/dashboard";
 import AccountDetails from "./pages/protected/accountDetails";
+import OAuthCallback from "./components/auth/oAuthCallback";
 
 export default function App() {
   return (
@@ -13,8 +14,12 @@ export default function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<AppLayout />}>
-              <Route path="/" element={<Home />} />
+            <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />
+            <Route
+              path={`${import.meta.env.VITE_AUTH_CALLBACK_URL}`}
+              element={<OAuthCallback />}
+            />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/account-details" element={<AccountDetails />} />

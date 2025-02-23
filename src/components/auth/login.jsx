@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useSignIn } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import { useNavigate, useSearchParams } from "react-router";
+import SSOButton from "./SSOButton";
 
 export function LoginForm({ className, ...props }) {
   const { isLoaded, signIn, setActive } = useSignIn();
@@ -21,6 +22,7 @@ export function LoginForm({ className, ...props }) {
   const navigate = useNavigate();
   const [query] = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const redirectTo = query.get("redirectTo") || "/";
 
   const handleChange = (e) => {
     if (e.target.name === "email") setEmail(e.target.value);
@@ -29,9 +31,6 @@ export function LoginForm({ className, ...props }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(
-      `Login form submitted with values: \nemail: ${email} & password: ${password}`
-    );
     setLoading(true);
 
     if (!isLoaded) return;
@@ -46,9 +45,7 @@ export function LoginForm({ className, ...props }) {
         await setActive({ session: signInAttempt.createdSessionId });
         setEmail("");
         setPassword("");
-        const redirectTo = query.get("redirectTo") || "/";
         setTimeout(() => {
-          console.log("Redirecting to:", redirectTo);
           navigate(redirectTo, { replace: true });
           setLoading(false);
         }, 100);
@@ -59,7 +56,7 @@ export function LoginForm({ className, ...props }) {
     } catch (error) {
       toast.error(error.errors[0].message);
       console.error(JSON.stringify(error, null, 2));
-      setLoading(false)
+      setLoading(false);
     }
   };
   return (
@@ -134,9 +131,11 @@ export function LoginForm({ className, ...props }) {
                   "Login"
                 )}
               </Button>
-              <Button variant="outline" className="w-full">
-                Sign-In with Github
-              </Button>
+              <SSOButton
+                mode={"sign-in"}
+                provider={"Google"}
+                redirectTo={redirectTo}
+              />
             </div>
           </form>
         </CardContent>

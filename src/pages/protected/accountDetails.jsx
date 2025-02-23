@@ -3,7 +3,6 @@ import { useUser } from "@clerk/clerk-react";
 const AccountDetails = () => {
   const { isLoaded, user } = useUser();
   if (!isLoaded) return <div>Loading...</div>;
-  else console.log(user);
 
   const { firstName, fullName, primaryEmailAddress, imageUrl } = user
 

@@ -12,8 +12,9 @@ import { Input } from "@/src/components/ui/input";
 import { useReducer, useState } from "react";
 import { useSignUp } from "@clerk/clerk-react";
 import VerifyEmail from "./verifyEmail";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { toast } from "sonner";
+import SSOButton from "./SSOButton";
 
 const initialState = {
   first_name: "",
@@ -41,6 +42,8 @@ export function RegisterForm({ className, ...props }) {
   const [verifying, setVerifying] = useState(false);
   const [code, setCode] = useState("");
   const navigate = useNavigate();
+  const [query] = useSearchParams();
+  const redirectTo = query.get("redirectTo") || "/";
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -58,7 +61,6 @@ export function RegisterForm({ className, ...props }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Register form submitted with values: ", state);
 
     if (!isLoaded) return;
 
@@ -83,7 +85,7 @@ export function RegisterForm({ className, ...props }) {
       setVerifying(true);
       dispatch({ type: "RESET" });
     } catch (error) {
-      toast.error(error?.errors[0]?.message)
+      toast.error(error?.errors[0]?.message);
       console.error(JSON.stringify(error, null, 2));
     }
   };
@@ -109,7 +111,10 @@ export function RegisterForm({ className, ...props }) {
     }
   };
 
-  if (verifying) return <VerifyEmail handleVerify={handleVerify} code={code} setCode={setCode} />;
+  if (verifying)
+    return (
+      <VerifyEmail handleVerify={handleVerify} code={code} setCode={setCode} />
+    );
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -189,9 +194,11 @@ export function RegisterForm({ className, ...props }) {
               <Button type="submit" className="w-full">
                 Continue
               </Button>
-              <Button variant="outline" className="w-full">
-                Sign-Up with Github
-              </Button>
+              <SSOButton
+                mode="sign-up"
+                provider={"Google"}
+                redirectTo={redirectTo}
+              />
             </div>
           </form>
         </CardContent>
