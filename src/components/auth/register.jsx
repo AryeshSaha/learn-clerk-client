@@ -195,10 +195,14 @@ export function RegisterForm({ className, ...props }) {
                 Continue
               </Button>
               <SSOButton
-                mode="sign-up"
                 provider={"Google"}
                 redirectTo={redirectTo}
-              />
+                classname={
+                  "bg-red-500 hover:bg-red-600 border-none text-white"
+                }
+              >
+                Sign-up with Google
+              </SSOButton>
             </div>
           </form>
         </CardContent>

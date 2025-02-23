@@ -1,9 +1,9 @@
-import { useSignIn, useSignUp } from "@clerk/clerk-react";
+import { useSignIn } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import { Button } from "../ui/button";
+import { cn } from "@/src/lib/utils";
 
-const SSOButton = ({ mode, provider, redirectTo }) => {
-  const { signUp } = useSignUp();
+const SSOButton = ({ children, provider, redirectTo, classname }) => {
   const { signIn } = useSignIn();
   const strategies = {
     google: "oauth_google",
@@ -11,14 +11,13 @@ const SSOButton = ({ mode, provider, redirectTo }) => {
     facebook: "oauth_facebook",
   };
   const handleOAuthSignIn = async () => {
-    const authInstance = mode === "sign-in" ? signIn : signUp;
-
     try {
-      await authInstance.authenticateWithRedirect({
+      await signIn.authenticateWithRedirect({
         strategy: strategies[provider.toLowerCase()],
         redirectUrl: `${
           import.meta.env.VITE_AUTH_CALLBACK_URL
         }?redirectTo=${redirectTo}`,
+        redirectUrlComplete: `${redirectTo}`,
       });
     } catch (error) {
       console.error(JSON.stringify(error, null, 2));
@@ -29,10 +28,10 @@ const SSOButton = ({ mode, provider, redirectTo }) => {
     <>
       <Button
         variant="outline"
-        className="w-full capitalize cursor-pointer"
+        className={cn("w-full capitalize cursor-pointer", classname)}
         onClick={handleOAuthSignIn}
       >
-        Sign-Up with {provider}
+        {children}
       </Button>
     </>
   );

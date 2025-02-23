@@ -132,10 +132,12 @@ export function LoginForm({ className, ...props }) {
                 )}
               </Button>
               <SSOButton
-                mode={"sign-in"}
                 provider={"Google"}
                 redirectTo={redirectTo}
-              />
+                classname={"bg-green-500 hover:bg-green-600 border-none text-white"}
+              >
+                Sign-in with Google
+              </SSOButton>
             </div>
           </form>
         </CardContent>
